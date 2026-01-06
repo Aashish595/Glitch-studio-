@@ -142,11 +142,7 @@ const Contact = () => {
             </form>
           </div>
 
-          <div className="mt-32 pt-12 border-t border-white/10 text-center">
-            <p className="text-gray-500 text-sm">
-              © 2025 Glitch Studio. Crafting visual chaos into perfection.
-            </p>
-          </div>
+       
         </div>
       </div>
     </section>

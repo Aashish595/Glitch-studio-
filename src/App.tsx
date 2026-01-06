@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import Hero from './components/Hero';
-import Showreel from './components/Showreel';
+// import Showreel from './components/Showreel';
 import About from './components/About';
 import Projects from './components/Projects';
 import Services from './components/Services';
 import Contact from './components/Contact';
 import Navigation from './components/Navigation';
+import Footer from './components/Footer';
 
 function App() {
   const [scrollProgress, setScrollProgress] = useState(0);
@@ -30,11 +31,12 @@ function App() {
 
       <Navigation />
       <Hero />
-      <Showreel />
+      {/* <Showreel /> */}
       <About />
       <Projects />
       <Services />
       <Contact />
+      <Footer/>
     </div>
   );
 }

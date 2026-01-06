@@ -1,103 +1,103 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from "react";
+
+const logos = [
+  "/pie.png",
+  "/seiiki.png",
+  "/trudes-studio.png",
+  "/v-perfume.png",
+  "/zvart.png",
+];
 
 const About = () => {
   const [isVisible, setIsVisible] = useState(false);
-  const [activeCard, setActiveCard] = useState<number | null>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-        }
-      },
-      { threshold: 0.2 }
+      ([entry]) => entry.isIntersecting && setIsVisible(true),
+      { threshold: 0.3 }
     );
 
     if (sectionRef.current) {
       observer.observe(sectionRef.current);
     }
-
     return () => observer.disconnect();
   }, []);
-
-  const cards = [
-    {
-      title: 'Creative Vision',
-      description: 'Every frame is a canvas. Every shot tells a story. We don\'t just create effects — we craft experiences that resonate.'
-    },
-    {
-      title: 'Technical Mastery',
-      description: 'From concept to final render, we leverage cutting-edge tools and techniques to push the boundaries of what\'s possible.'
-    },
-    {
-      title: 'Boutique Excellence',
-      description: 'Being small means being agile, focused, and deeply invested in every single project we touch. No compromises.'
-    }
-  ];
 
   return (
     <section
       id="about"
       ref={sectionRef}
-      className="relative min-h-screen flex items-center justify-center py-32 px-6 bg-zinc-950"
+      className="relative py-32 px-6 bg-zinc-950 overflow-hidden"
     >
+      {/* ambient glow */}
       <div className="absolute inset-0 opacity-5">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-amber-500 rounded-full blur-[150px]" />
+        <div className="absolute top-1/2 left-1/2 w-[700px] h-[700px] -translate-x-1/2 -translate-y-1/2 bg-amber-500 rounded-full blur-[160px]" />
       </div>
 
-      <div className="max-w-6xl mx-auto relative z-10">
+      <div className="relative z-10 max-w-6xl mx-auto">
+        {/* TEXT */}
         <div
           className={`transition-all duration-1000 ${
-            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-20'
+            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
           }`}
         >
-          <div className="text-center mb-20">
-            <h2 className="text-5xl md:text-7xl font-black mb-4 text-white">
-              About Us
-            </h2>
-            <div className="w-32 h-px bg-gradient-to-r from-transparent via-amber-500 to-transparent mx-auto mb-8" />
-            <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-              A boutique VFX and post-production studio where creativity meets technical excellence
-            </p>
-          </div>
+          <p className="text-amber-500 uppercase tracking-[0.3em] text-xs mb-4">
+            Know More About Us
+          </p>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            {cards.map((card, index) => (
-              <div
-                key={index}
-                onMouseEnter={() => setActiveCard(index)}
-                onMouseLeave={() => setActiveCard(null)}
-                className={`relative p-8 bg-white/5 backdrop-blur-sm border border-white/10 transition-all duration-700 cursor-pointer ${
-                  isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
-                } ${
-                  activeCard === index ? 'md:scale-105 border-amber-500/50 shadow-[0_0_40px_rgba(245,158,11,0.2)]' : ''
-                }`}
-                style={{
-                  transitionDelay: `${index * 150}ms`
-                }}
-              >
-                <div className={`absolute inset-0 bg-gradient-to-br from-amber-500/0 to-amber-500/0 transition-all duration-700 ${
-                  activeCard === index ? 'from-amber-500/10 to-transparent' : ''
-                }`} />
+          <h2 className="text-5xl md:text-7xl font-black text-white mb-8">
+            From Reveries
+            <span className="block text-amber-500">To Realities!</span>
+          </h2>
 
-                <div className="relative z-10">
-                  <h3 className={`text-2xl font-bold mb-4 transition-colors duration-300 ${
-                    activeCard === index ? 'text-amber-500' : 'text-white'
-                  }`}>
-                    {card.title}
-                  </h3>
-                  <p className="text-gray-400 leading-relaxed">
-                    {card.description}
-                  </p>
-                </div>
+          <p className="text-lg text-gray-400 max-w-3xl leading-relaxed mb-16">
+            Glitch Studio is a boutique VFX and post-production studio specializing
+            in high-end 2D & 3D animation, motion design, and cinematic visuals.
+            We collaborate with brands worldwide to transform imagination into
+            powerful visual narratives — crafted with precision, passion, and purpose.
+          </p>
+        </div>
 
-                <div className={`absolute bottom-0 left-0 h-1 bg-gradient-to-r from-amber-500 to-amber-600 transition-all duration-500 ${
-                  activeCard === index ? 'w-full' : 'w-0'
-                }`} />
-              </div>
-            ))}
+        {/* STATS */}
+        <div
+          className={`grid grid-cols-2 md:grid-cols-3 gap-12 mb-24 transition-all duration-1000 delay-200 ${
+            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+          }`}
+        >
+          {[
+            { label: "Projects Done", value: "80+" },
+            { label: "Total Clients", value: "56+" },
+            { label: "Years Experience", value: "6+" },
+          ].map((stat, i) => (
+            <div key={i}>
+              <p className="text-5xl font-extrabold text-white mb-2">
+                {stat.value}
+              </p>
+              <p className="uppercase tracking-widest text-xs text-gray-500">
+                {stat.label}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        {/* LOGO MARQUEE */}
+        <div className="relative">
+          <p className="text-center text-sm uppercase tracking-widest text-gray-500 mb-8">
+            Proudly Crafted Videos For
+          </p>
+
+          <div className="overflow-hidden relative">
+            <div className="flex w-max animate-marquee gap-20">
+              {[...logos, ...logos].map((logo, index) => (
+                <img
+                  key={index}
+                  src={logo}
+                  alt="client logo"
+                  className="h-10 opacity-70 grayscale hover:opacity-100 hover:grayscale-0 transition"
+                />
+              ))}
+            </div>
           </div>
         </div>
       </div>
