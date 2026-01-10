@@ -1,43 +1,18 @@
-import { useState, useEffect } from 'react';
-import Hero from './components/Hero';
-// import Showreel from './components/Showreel';
-import About from './components/About';
-import Projects from './components/Projects';
-import Services from './components/Services';
-import Contact from './components/Contact';
-import Navigation from './components/Navigation';
-import Footer from './components/Footer';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Home from "./pages/Home";
+import Works from "./pages/Works";
+import CustomCursor from "./components/CustomCursor";
 
 function App() {
-  const [scrollProgress, setScrollProgress] = useState(0);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
-      const progress = (window.scrollY / totalHeight) * 100;
-      setScrollProgress(progress);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
   return (
-    <div className="relative bg-black text-white overflow-x-hidden">
-      <div
-        className="fixed top-0 left-0 h-1 bg-gradient-to-r from-amber-500 via-amber-600 to-amber-500 z-50 transition-all duration-300"
-        style={{ width: `${scrollProgress}%` }}
-      />
-
-      <Navigation />
-      <Hero />
-      {/* <Showreel /> */}
-      <About />
-      <Projects />
-      <Services />
-      <Contact />
-      <Footer/>
-    </div>
+    
+    <BrowserRouter>
+      <CustomCursor />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/works" element={<Works />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

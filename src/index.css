@@ -8,6 +8,9 @@
   * {
     @apply scroll-smooth;
   }
+ * {
+  cursor: none;
+}
 
   body {
     @apply antialiased;

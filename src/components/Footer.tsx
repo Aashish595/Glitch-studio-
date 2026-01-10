@@ -1,4 +1,11 @@
-import { Mail, Phone, MapPin, Instagram, Linkedin, Youtube } from "lucide-react";
+import {
+  Mail,
+  Phone,
+  MapPin,
+  Instagram,
+  Linkedin,
+  Youtube,
+} from "lucide-react";
 
 const Footer = () => {
   return (
@@ -12,8 +19,8 @@ const Footer = () => {
           <div>
             <img src="/logo.png" alt="Glitch Studio" className="h-9 mb-6" />
             <p className="text-sm leading-relaxed max-w-xs">
-              A boutique VFX & post-production studio crafting cinematic visuals,
-              immersive motion design, and unforgettable brand stories.
+              A boutique VFX & post-production studio crafting cinematic
+              visuals, immersive motion design, and unforgettable brand stories.
             </p>
           </div>
 
@@ -23,18 +30,17 @@ const Footer = () => {
               Navigation
             </h4>
             <ul className="space-y-3 text-sm">
-              {["Home", "About", "Projects", "Services", "Contact"].map(
-                (item) => (
-                  <li key={item}>
-                    <a
-                      href={`#${item.toLowerCase()}`}
-                      className="hover:text-amber-400 transition"
-                    >
-                      {item}
-                    </a>
-                  </li>
-                )
-              )}
+              {["Home", "About", "Works", "Services", "Contact"].map((item) => (
+                <li key={item}>
+                  <a
+                    href={
+                      item === "Works" ? "/works" : `#${item.toLowerCase()}`
+                    }
+                  >
+                    {item}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
 
