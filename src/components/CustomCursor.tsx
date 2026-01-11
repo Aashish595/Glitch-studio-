@@ -2,26 +2,23 @@ import { useEffect, useRef } from "react";
 
 const CustomCursor = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const points = useRef<{ x: number; y: number }[]>([]);
+  const cursor = useRef({ x: 0, y: 0 });
+  const target = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
     const canvas = canvasRef.current!;
     const ctx = canvas.getContext("2d")!;
-
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    const maxPoints = 25; // snake length
-    const mouse = { x: canvas.width / 2, y: canvas.height / 2 };
 
     const resize = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     };
 
+    resize();
+
     const move = (e: MouseEvent) => {
-      mouse.x = e.clientX;
-      mouse.y = e.clientY;
+      target.current.x = e.clientX;
+      target.current.y = e.clientY;
     };
 
     window.addEventListener("mousemove", move);
@@ -30,20 +27,14 @@ const CustomCursor = () => {
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      points.current.push({ x: mouse.x, y: mouse.y });
-      if (points.current.length > maxPoints) points.current.shift();
+      // smooth follow (lerp)
+      cursor.current.x += (target.current.x - cursor.current.x) * 0.15;
+      cursor.current.y += (target.current.y - cursor.current.y) * 0.15;
 
-      for (let i = 0; i < points.current.length; i++) {
-        const p = points.current[i];
-        const size = i / points.current.length * 10;
-
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(245,158,11,${i / points.current.length})`;
-        ctx.shadowBlur = 25;
-        ctx.shadowColor = "#f59e0b";
-        ctx.fill();
-      }
+      ctx.beginPath();
+      ctx.arc(cursor.current.x, cursor.current.y, 6, 0, Math.PI * 2);
+      ctx.fillStyle = "#f59e0b"; // amber
+      ctx.fill();
 
       requestAnimationFrame(animate);
     };
