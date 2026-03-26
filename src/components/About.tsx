@@ -1,100 +1,159 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from 'react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const logos = [
-  "/pie.png",
-  "/seiiki.png",
-  "/trudes-studio.png",
-  "/v-perfume.png",
-  "/zvart.png",
+  '/pie.png',
+  '/seiiki.png',
+  '/trudes-studio.png',
+  '/v-perfume.png',
+  '/zvart.png',
+];
+
+const stats = [
+  { value: '80+', label: 'Projects Delivered' },
+  { value: '56+', label: 'Global Clients' },
+  { value: '6+', label: 'Years of Craft' },
 ];
 
 const About = () => {
-  const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
+  const headingRef = useRef<HTMLDivElement>(null);
+  const textRef = useRef<HTMLDivElement>(null);
+  const statsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => entry.isIntersecting && setIsVisible(true),
-      { threshold: 0.3 }
-    );
+    const ctx = gsap.context(() => {
+      gsap.from(headingRef.current, {
+        scrollTrigger: {
+          trigger: headingRef.current,
+          start: 'top 85%',
+          end: 'top 50%',
+          toggleActions: 'play none none none',
+        },
+        y: 60,
+        opacity: 0,
+        duration: 1,
+        ease: 'power3.out',
+      });
 
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
-    return () => observer.disconnect();
+      gsap.from(textRef.current, {
+        scrollTrigger: {
+          trigger: textRef.current,
+          start: 'top 85%',
+          toggleActions: 'play none none none',
+        },
+        y: 40,
+        opacity: 0,
+        duration: 0.8,
+        delay: 0.2,
+        ease: 'power3.out',
+      });
+
+      if (statsRef.current) {
+        gsap.from(statsRef.current.children, {
+          scrollTrigger: {
+            trigger: statsRef.current,
+            start: 'top 85%',
+            toggleActions: 'play none none none',
+          },
+          y: 30,
+          opacity: 0,
+          stagger: 0.1,
+          duration: 0.7,
+          ease: 'power3.out',
+        });
+      }
+    }, sectionRef);
+
+    return () => ctx.revert();
   }, []);
 
   return (
     <section
       id="about"
       ref={sectionRef}
-      className="relative py-32 px-6 bg-zinc-950 overflow-hidden"
+      className="relative section-padding bg-surface-900 overflow-hidden"
     >
-      {/* ambient glow */}
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute top-1/2 left-1/2 w-[700px] h-[700px] -translate-x-1/2 -translate-y-1/2 bg-amber-500 rounded-full blur-[160px]" />
-      </div>
+      {/* Ambient glows */}
+      <div className="absolute top-1/2 -left-48 w-[600px] h-[600px] bg-accent/5 rounded-full blur-[160px]" />
+      <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-accent-violet/5 rounded-full blur-[120px]" />
 
-      <div className="relative z-10 max-w-6xl mx-auto">
-        {/* TEXT */}
-        <div
-          className={`transition-all duration-1000 ${
-            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-          }`}
-        >
-          <p className="text-amber-500 uppercase tracking-[0.3em] text-xs mb-4">
-            Know More About Us
-          </p>
-
-          <h2 className="text-5xl md:text-7xl font-black text-white mb-8">
-            From Reveries
-            <span className="block text-amber-500">To Realities!</span>
-          </h2>
-
-          <p className="text-lg text-gray-400 max-w-3xl leading-relaxed mb-16">
-            Glitch Studio is a boutique VFX and post-production studio specializing
-            in high-end 2D & 3D animation, motion design, and cinematic visuals.
-            We collaborate with brands worldwide to transform imagination into
-            powerful visual narratives — crafted with precision, passion, and purpose.
-          </p>
-        </div>
-
-        {/* STATS */}
-        <div
-          className={`grid grid-cols-2 md:grid-cols-3 gap-12 mb-24 transition-all duration-1000 delay-200 ${
-            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-          }`}
-        >
-          {[
-            { label: "Projects Done", value: "80+" },
-            { label: "Total Clients", value: "56+" },
-            { label: "Years Experience", value: "6+" },
-          ].map((stat, i) => (
-            <div key={i}>
-              <p className="text-5xl font-extrabold text-white mb-2">
-                {stat.value}
+      <div className="relative z-10 max-w-7xl mx-auto">
+        {/* Asymmetric two-column */}
+        <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-start">
+          {/* Left — Text */}
+          <div>
+            <div ref={headingRef}>
+              <p className="text-[11px] uppercase tracking-[0.4em] text-accent-light mb-5 font-medium">
+                About the Studio
               </p>
-              <p className="uppercase tracking-widest text-xs text-gray-500">
-                {stat.label}
+              <h2 className="font-display text-4xl sm:text-5xl md:text-6xl font-extrabold text-white leading-[1.05] mb-8">
+                From Reveries
+                <span className="block text-gradient">To Realities.</span>
+              </h2>
+            </div>
+
+            <div ref={textRef}>
+              <p className="text-lg text-surface-200 leading-relaxed mb-6">
+                Glitch Studio is a premium VFX and creative production house
+                specializing in high-end 2D & 3D animation, motion design, and
+                cinematic visuals. Our team of artists, animators, and designers
+                collaborates with brands worldwide to transform imagination into
+                powerful visual narratives.
+              </p>
+              <p className="text-base text-surface-300 leading-relaxed">
+                With expertise spanning feature film VFX, commercial production,
+                and interactive web experiences, we craft every project with
+                precision, passion, and purpose — delivering work that stands
+                apart in a crowded creative landscape.
               </p>
             </div>
-          ))}
+          </div>
+
+          {/* Right — Stats + Visual Element */}
+          <div className="lg:pt-16">
+            <div
+              ref={statsRef}
+              className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-1 gap-8 lg:gap-10"
+            >
+              {stats.map((stat, i) => (
+                <div
+                  key={i}
+                  className="relative pl-6 border-l border-accent/30"
+                >
+                  <p className="font-display text-5xl lg:text-6xl font-extrabold text-white mb-2">
+                    {stat.value}
+                  </p>
+                  <p className="text-[11px] uppercase tracking-[0.25em] text-surface-300">
+                    {stat.label}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
 
-        {/* LOGO MARQUEE */}
-        <div className="relative">
-          <p className="text-center text-sm uppercase tracking-widest text-gray-500 mb-8">
-            Proudly Crafted Videos For
+        {/* Client Marquee */}
+        <div className="mt-24 lg:mt-32">
+          <p className="text-center text-[10px] uppercase tracking-[0.35em] text-surface-400 mb-10">
+            Trusted by Brands Worldwide
           </p>
 
           <div className="overflow-hidden relative">
-            <div className="flex w-max animate-marquee gap-20">
-              {[...logos, ...logos].map((logo, index) => (
+            {/* Fade edges */}
+            <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-surface-900 to-transparent z-10" />
+            <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-surface-900 to-transparent z-10" />
+
+            <div className="flex w-max animate-marquee gap-20 items-center">
+              {[...logos, ...logos, ...logos].map((logo, index) => (
                 <img
                   key={index}
                   src={logo}
                   alt="client logo"
-                  className="h-10 opacity-70 grayscale hover:opacity-100 hover:grayscale-0 transition"
+                  className="h-8 md:h-10 opacity-40 grayscale hover:opacity-80 hover:grayscale-0 transition-all duration-500"
                 />
               ))}
             </div>

@@ -1,94 +1,112 @@
 import { useEffect, useRef, useState } from 'react';
 import { Play, X } from 'lucide-react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const Showreel = () => {
-  const [isVisible, setIsVisible] = useState(false);
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-        }
-      },
-      { threshold: 0.2 }
-    );
+    const ctx = gsap.context(() => {
+      gsap.from(contentRef.current, {
+        scrollTrigger: {
+          trigger: contentRef.current,
+          start: 'top 80%',
+          toggleActions: 'play none none none',
+        },
+        y: 60,
+        opacity: 0,
+        duration: 1,
+        ease: 'power3.out',
+      });
+    }, sectionRef);
 
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
-
-    return () => observer.disconnect();
+    return () => ctx.revert();
   }, []);
 
   return (
     <section
       id="showreel"
       ref={sectionRef}
-      className="relative min-h-screen py-32 px-6 bg-black"
+      className="relative section-padding bg-surface-900 overflow-hidden"
     >
       <div className="max-w-7xl mx-auto">
-        <div
-          className={`transition-all duration-1000 ${
-            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-20'
-          }`}
-        >
-          <div className="text-center mb-20">
-            <div className="inline-block">
-              <h2 className="text-5xl md:text-7xl font-black mb-4 text-white">
-                Showreel
-              </h2>
-              <div className="w-full h-px bg-gradient-to-r from-transparent via-amber-500 to-transparent" />
-            </div>
-            <p className="text-gray-400 mt-6 text-lg max-w-2xl mx-auto">
-              A curated collection of our finest work
+        <div ref={contentRef}>
+          {/* Header */}
+          <div className="text-center mb-16">
+            <p className="text-[11px] uppercase tracking-[0.4em] text-accent-light mb-5 font-medium">
+              Showreel
+            </p>
+            <h2 className="font-display text-4xl sm:text-5xl md:text-6xl font-extrabold text-white leading-[1.05] mb-6">
+              See It In Motion
+            </h2>
+            <p className="text-lg text-surface-300 max-w-xl mx-auto">
+              A curated collection of our finest work — 3 minutes of pure
+              visual craft
             </p>
           </div>
 
-          <div className="relative aspect-video max-w-5xl mx-auto bg-zinc-900 overflow-hidden group cursor-pointer"
-               onClick={() => setIsVideoPlaying(true)}>
+          {/* Video Thumbnail */}
+          <div
+            className="relative aspect-video max-w-5xl mx-auto overflow-hidden rounded-sm group cursor-pointer"
+            onClick={() => setIsVideoPlaying(true)}
+          >
             <img
               src="https://images.pexels.com/photos/7991319/pexels-photo-7991319.jpeg?auto=compress&cs=tinysrgb&w=1920"
               alt="Showreel thumbnail"
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
             />
 
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+            {/* Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-surface-950/80 via-surface-950/30 to-surface-950/20" />
 
+            {/* Play Button */}
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-24 h-24 rounded-full bg-white/10 backdrop-blur-sm border-2 border-amber-500/50 flex items-center justify-center transform group-hover:scale-110 transition-all duration-300 group-hover:border-amber-500">
-                <Play className="text-white ml-2" size={36} fill="white" />
+              <div className="w-20 h-20 md:w-24 md:h-24 rounded-full bg-white/5 backdrop-blur-sm border border-accent/40 flex items-center justify-center transform group-hover:scale-110 transition-all duration-500 group-hover:border-accent group-hover:bg-accent/10">
+                <Play
+                  className="text-white ml-1"
+                  size={32}
+                  fill="rgba(255,255,255,0.8)"
+                />
               </div>
             </div>
 
+            {/* Bottom info */}
             <div className="absolute bottom-0 left-0 right-0 p-8">
-              <h3 className="text-3xl font-bold text-white mb-2">2024 Showreel</h3>
-              <p className="text-gray-300">3 minutes of pure visual excellence</p>
+              <h3 className="font-display text-2xl md:text-3xl font-bold text-white mb-1">
+                2024 Showreel
+              </h3>
+              <p className="text-surface-300 text-sm">
+                VFX · Animation · Motion Design
+              </p>
             </div>
 
-            <div className="absolute inset-0 border-2 border-transparent group-hover:border-amber-500/50 transition-colors duration-500" />
+            {/* Hover border */}
+            <div className="absolute inset-0 border border-transparent group-hover:border-accent/20 transition-colors duration-500 rounded-sm pointer-events-none" />
           </div>
         </div>
       </div>
 
+      {/* Video Modal */}
       {isVideoPlaying && (
-        <div className="fixed inset-0 z-50 bg-black/95 backdrop-blur-sm flex items-center justify-center p-6 animate-fadeIn">
+        <div className="fixed inset-0 z-50 bg-surface-950/95 backdrop-blur-md flex items-center justify-center p-6">
           <button
             onClick={() => setIsVideoPlaying(false)}
-            className="absolute top-8 right-8 w-12 h-12 rounded-full bg-white/10 border border-white/20 hover:border-amber-500 flex items-center justify-center transition-all duration-300 hover:rotate-90"
+            className="absolute top-8 right-8 w-12 h-12 rounded-full bg-white/5 border border-white/10 hover:border-accent/50 flex items-center justify-center transition-all duration-300 hover:rotate-90"
           >
-            <X className="text-white" size={24} />
+            <X className="text-white" size={20} />
           </button>
 
           <div className="w-full max-w-6xl aspect-video">
-            <video
-              autoPlay
-              controls
-              className="w-full h-full"
-            >
-              <source src="https://cdn.coverr.co/videos/coverr-cinematic-film-countdown-7370/1080p.mp4" type="video/mp4" />
+            <video autoPlay controls className="w-full h-full rounded-sm">
+              <source
+                src="https://cdn.coverr.co/videos/coverr-cinematic-film-countdown-7370/1080p.mp4"
+                type="video/mp4"
+              />
             </video>
           </div>
         </div>

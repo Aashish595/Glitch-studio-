@@ -1,27 +1,50 @@
 import { useEffect, useRef, useState } from 'react';
-import { Mail, MapPin, Send } from 'lucide-react';
+import { Mail, MapPin, ArrowRight } from 'lucide-react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const Contact = () => {
-  const [isVisible, setIsVisible] = useState(false);
-  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
-  const [isHovering, setIsHovering] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    project: '',
+    message: '',
+  });
   const sectionRef = useRef<HTMLDivElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-        }
-      },
-      { threshold: 0.1 }
-    );
+    const ctx = gsap.context(() => {
+      gsap.from(headerRef.current, {
+        scrollTrigger: {
+          trigger: headerRef.current,
+          start: 'top 85%',
+          toggleActions: 'play none none none',
+        },
+        y: 50,
+        opacity: 0,
+        duration: 0.9,
+        ease: 'power3.out',
+      });
 
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
+      gsap.from(formRef.current, {
+        scrollTrigger: {
+          trigger: formRef.current,
+          start: 'top 85%',
+          toggleActions: 'play none none none',
+        },
+        y: 40,
+        opacity: 0,
+        duration: 0.8,
+        delay: 0.2,
+        ease: 'power3.out',
+      });
+    }, sectionRef);
 
-    return () => observer.disconnect();
+    return () => ctx.revert();
   }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -29,120 +52,147 @@ const Contact = () => {
     console.log('Form submitted:', formData);
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData(prev => ({
-      ...prev,
-      [e.target.name]: e.target.value
-    }));
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
+
+  const inputClasses =
+    'w-full px-5 py-4 bg-white/[0.03] border border-white/[0.08] rounded-sm text-white placeholder-surface-400 transition-all duration-300 focus:outline-none focus:border-accent/50 focus:shadow-[0_0_20px_rgba(220,38,38,0.15)] text-sm';
 
   return (
     <section
       id="contact"
       ref={sectionRef}
-      className="relative min-h-screen py-32 px-6 bg-black"
+      className="relative section-padding bg-surface-900 overflow-hidden"
     >
-      <div className="max-w-6xl mx-auto relative z-10">
-        <div
-          className={`transition-all duration-1000 ${
-            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-20'
-          }`}
-        >
-          <div className="text-center mb-20">
-            <h2 className="text-5xl md:text-7xl font-black mb-4 text-white">
-              Let's Create
-            </h2>
-            <div className="w-32 h-px bg-gradient-to-r from-transparent via-amber-500 to-transparent mx-auto mb-8" />
-            <p className="text-xl text-gray-400">
-              Ready to bring your vision to life?
+      {/* Glow */}
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-accent/5 rounded-full blur-[160px]" />
+
+      <div className="max-w-7xl mx-auto relative z-10">
+        <div className="grid lg:grid-cols-2 gap-16 lg:gap-24">
+          {/* Left — CTA Text */}
+          <div ref={headerRef}>
+            <p className="text-[11px] uppercase tracking-[0.4em] text-accent-light mb-5 font-medium">
+              Get in Touch
             </p>
-          </div>
+            <h2 className="font-display text-4xl sm:text-5xl md:text-6xl font-extrabold text-white leading-[1.05] mb-8">
+              Let's Create
+              <span className="block text-gradient">Something Epic.</span>
+            </h2>
 
-          <div className="grid md:grid-cols-2 gap-16">
-            <div className="space-y-8">
-              <p className="text-xl text-gray-300 leading-relaxed">
-                Whether you have a fully formed concept or just the spark of an idea,
-                we're here to collaborate on something extraordinary.
-              </p>
+            <p className="text-lg text-surface-200 leading-relaxed mb-10">
+              Whether you have a fully formed concept or just the spark of an
+              idea — we're here to collaborate on something extraordinary. Tell
+              us about your vision and let's bring it to life.
+            </p>
 
-              <div className="space-y-6">
-                <div className="flex items-start space-x-4 group">
-                  <div className="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center group-hover:border-amber-500/50 group-hover:bg-amber-500/10 transition-all duration-300">
-                    <Mail className="text-gray-400 group-hover:text-amber-500 transition-colors duration-300" size={20} />
-                  </div>
-                  <div>
-                    <h3 className="text-sm uppercase tracking-wider text-gray-500 mb-1">Email</h3>
-                    <a href="mailto:hello@glitchstudio.com" className="text-lg text-white hover:text-amber-500 transition-colors">
-                      hello@glitchstudio.com
-                    </a>
-                  </div>
+            {/* Contact Info */}
+            <div className="space-y-6">
+              <div className="flex items-start gap-4 group">
+                <div className="w-11 h-11 rounded-full bg-white/[0.03] border border-white/[0.06] flex items-center justify-center group-hover:border-accent/30 group-hover:bg-accent/10 transition-all duration-300">
+                  <Mail
+                    className="text-surface-400 group-hover:text-accent-light transition-colors duration-300"
+                    size={18}
+                  />
                 </div>
+                <div>
+                  <h3 className="text-[10px] uppercase tracking-[0.25em] text-surface-400 mb-1">
+                    Email
+                  </h3>
+                  <a
+                    href="mailto:hello@glitchstudio.com"
+                    className="text-white hover:text-accent-light transition-colors text-sm"
+                  >
+                    hello@glitchstudio.com
+                  </a>
+                </div>
+              </div>
 
-                <div className="flex items-start space-x-4 group">
-                  <div className="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center group-hover:border-amber-500/50 group-hover:bg-amber-500/10 transition-all duration-300">
-                    <MapPin className="text-gray-400 group-hover:text-amber-500 transition-colors duration-300" size={20} />
-                  </div>
-                  <div>
-                    <h3 className="text-sm uppercase tracking-wider text-gray-500 mb-1">Location</h3>
-                    <p className="text-lg text-white">Los Angeles, CA</p>
-                  </div>
+              <div className="flex items-start gap-4 group">
+                <div className="w-11 h-11 rounded-full bg-white/[0.03] border border-white/[0.06] flex items-center justify-center group-hover:border-accent/30 group-hover:bg-accent/10 transition-all duration-300">
+                  <MapPin
+                    className="text-surface-400 group-hover:text-accent-light transition-colors duration-300"
+                    size={18}
+                  />
+                </div>
+                <div>
+                  <h3 className="text-[10px] uppercase tracking-[0.25em] text-surface-400 mb-1">
+                    Location
+                  </h3>
+                  <p className="text-white text-sm">
+                    Remote Studio · Worldwide
+                  </p>
                 </div>
               </div>
             </div>
-
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <input
-                  type="text"
-                  name="name"
-                  placeholder="Your Name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-6 py-4 bg-white/5 border border-white/10 focus:border-amber-500 outline-none text-white placeholder-gray-500 transition-all duration-300 focus:shadow-[0_0_20px_rgba(245,158,11,0.2)]"
-                />
-              </div>
-
-              <div>
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="Your Email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-6 py-4 bg-white/5 border border-white/10 focus:border-amber-500 outline-none text-white placeholder-gray-500 transition-all duration-300 focus:shadow-[0_0_20px_rgba(245,158,11,0.2)]"
-                />
-              </div>
-
-              <div>
-                <textarea
-                  name="message"
-                  placeholder="Tell us about your project"
-                  value={formData.message}
-                  onChange={handleChange}
-                  required
-                  rows={6}
-                  className="w-full px-6 py-4 bg-white/5 border border-white/10 focus:border-amber-500 outline-none text-white placeholder-gray-500 transition-all duration-300 resize-none focus:shadow-[0_0_20px_rgba(245,158,11,0.2)]"
-                />
-              </div>
-
-              <button
-                type="submit"
-                onMouseEnter={() => setIsHovering(true)}
-                onMouseLeave={() => setIsHovering(false)}
-                className="group w-full px-8 py-4 bg-gradient-to-r from-amber-500 to-amber-600 text-black font-semibold uppercase tracking-wider text-sm transition-all duration-300 hover:shadow-[0_0_30px_rgba(245,158,11,0.5)] relative overflow-hidden"
-              >
-                <span className="relative z-10 flex items-center justify-center space-x-2">
-                  <span>Send Message</span>
-                  <Send size={18} className={`transition-transform duration-300 ${isHovering ? 'translate-x-1' : ''}`} />
-                </span>
-                <div className="absolute inset-0 bg-gradient-to-r from-amber-600 to-amber-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              </button>
-            </form>
           </div>
 
-       
+          {/* Right — Form */}
+          <form ref={formRef} onSubmit={handleSubmit} className="space-y-5">
+            <div className="grid sm:grid-cols-2 gap-5">
+              <input
+                type="text"
+                name="name"
+                placeholder="Your Name"
+                value={formData.name}
+                onChange={handleChange}
+                required
+                className={inputClasses}
+              />
+              <input
+                type="email"
+                name="email"
+                placeholder="Your Email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+                className={inputClasses}
+              />
+            </div>
+
+            <select
+              name="project"
+              value={formData.project}
+              onChange={handleChange}
+              className={`${inputClasses} ${
+                !formData.project ? 'text-surface-400' : ''
+              }`}
+            >
+              <option value="">Project Type</option>
+              <option value="vfx">VFX & Compositing</option>
+              <option value="animation">2D / 3D Animation</option>
+              <option value="motion">Motion Graphics</option>
+              <option value="web">Web & App Design</option>
+              <option value="commercial">Commercial / Brand Video</option>
+              <option value="other">Other</option>
+            </select>
+
+            <textarea
+              name="message"
+              placeholder="Tell us about your project..."
+              value={formData.message}
+              onChange={handleChange}
+              required
+              rows={5}
+              className={`${inputClasses} resize-none`}
+            />
+
+            <button
+              type="submit"
+              className="group w-full px-8 py-4 bg-accent hover:bg-accent-light text-white font-semibold text-sm uppercase tracking-[0.15em] transition-all duration-300 overflow-hidden rounded-sm relative"
+            >
+              <span className="relative z-10 flex items-center justify-center gap-3">
+                Send Message
+                <ArrowRight
+                  size={16}
+                  className="transition-transform duration-300 group-hover:translate-x-1"
+                />
+              </span>
+              <div className="absolute inset-0 bg-gradient-to-r from-accent-light to-accent-violet opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            </button>
+          </form>
         </div>
       </div>
     </section>
